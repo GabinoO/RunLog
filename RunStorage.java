@@ -9,6 +9,47 @@ public class RunStorage {
   Run longestRun = null;
 
   /**
+   * This method reads in a CSV file of Run and adds each Run to the collection. The CSV file will be sorted as such:
+   * Distance, Time, Date(If applicable)
+   * @param fileName
+   */
+  public void readFile(String fileName) {
+    File aFile = new File(fileName);
+    Scanner scnr = null;
+    try {
+      scnr = new Scanner(aFile);
+    }
+    catch(FileNotFoundException e) {
+      System.out.println("File was not found");
+    }
+    while(scnr.hasNextLine()) {
+      // reads one line and splits it by: ","
+      String currLine = scnr.nextLine();
+      String[] runToSave = currLine.split(","); // [Distance, Time, Date]
+      // error checking
+      if (runToSave.length > 3 || runToSave.length < 1) {
+        System.out.println("Error: did not have nessasary data to log run");
+        return;
+      }
+      // save currLine information into a Run Object
+      double distance = Double.parseDouble(runToSave[0]);
+      String time = runToSave[1];
+      Run toAdd;
+      // if the only provided information was distance and time
+      if (runToSave.length == 2) {
+        toAdd = new Run(distance,time);
+      }
+      else {
+        // if the provided information was distance,time,date
+        String date = runToSave[2];
+        toAdd = new Run(distance,time,date);
+      }
+      this.addRun(toAdd);
+    }
+
+  }
+  
+  /**
    * adds the passed in run to the ArrayList field than sorts the Arraylist
    * @param toAdd the run to add to the sorted array
    */

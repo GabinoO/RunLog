@@ -256,7 +256,8 @@ public class Run implements Comparable<Run>{
     
     // calculates pace based on distance and time of run and stores into a double variable
     int hoursToMinutes = this.timeRan.getHour() * 60;
-    double totalMinutes = Double.valueOf(hoursToMinutes + this.timeRan.getMinute());
+    Double totalMinutes = (double)hoursToMinutes + (double)this.timeRan.getMinute();
+    totalMinutes = totalMinutes + ((double)this.timeRan.getSecond() / 60);
     pace = totalMinutes / this.distance;
 
     // convert pace to a formatted string
@@ -267,18 +268,16 @@ public class Run implements Comparable<Run>{
     temp = (int)pace;
     wholeNumSave = "" + wholeNum; // store whole num in a string
     fractionNumSave = "" + temp;  // store fraction part of num in a string
-    toReturn = wholeNumSave + ":" + fractionNumSave;
-    
-    // if the string is either 00:0 or 0:0 convert to 00:00 or 0:00
-    int indexOfColon = toReturn.indexOf(":");
-    int lastIndex = toReturn.length()-1;
-    if (toReturn.substring(indexOfColon+1, lastIndex+1).length() == 1) {
-      return toReturn + "0";
+
+    // if the fraction part of the string is # --> convert to 0#
+    if (fractionNumSave.length() == 1) {
+      fractionNumSave = "0" + fractionNumSave;
     }
-  
-    return toReturn;
+    toReturn = wholeNumSave + ":" + fractionNumSave;
+
+    return toReturn;  
     
-    
+  }
   }
   
   /**

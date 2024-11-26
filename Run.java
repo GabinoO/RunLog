@@ -316,8 +316,23 @@ public class Run implements Comparable<Run>{
    */
   @Override
   public String toString() {
+    // format the return string from LocalTime.toString()
+    String timeHour = "" + this.timeRan.getHour();
+    String timeMinute = "" + this.timeRan.getMinute();
+    String timeSeconds = "" + this.timeRan.getSecond();
+    if (timeHour.length() == 1) {
+      timeHour = "0" + timeHour;
+    }
+    if (timeMinute.length() == 1) {
+      timeMinute = "0" + timeMinute;
+    }
+    if (timeSeconds.length() == 1) {
+      timeSeconds = "0" + timeSeconds;
+    }
+    String runTime = "" + timeHour + ":" + timeMinute + ":" + timeSeconds;
     String toReturn = "";
-    toReturn = "Date of Run: " + this.runDate.toString() + "\n" + "Time Ran: " + this.timeRan + "\n" +
+
+    toReturn = "Date of Run: " + this.runDate.toString() + "\n" + "Time Ran: " + runTime + "\n" +
             "Distance Ran: " + this.distance + "\n" + "Pace of Run: " + this.paceOfRun; 
     return toReturn;
     

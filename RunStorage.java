@@ -5,13 +5,31 @@ public class RunStorage {
 
   ArrayList<Run> runStorage = new ArrayList<>(); // Sorted arraylist to store all Run objects 
   int size = 0;
-  
+  Run fastestRun = null;
+  Run longestRun = null;
 
   /**
    * adds the passed in run to the ArrayList field than sorts the Arraylist
    * @param toAdd the run to add to the sorted array
    */
   public void addRun(Run toAdd) {
+    // saves the passed in run as longest AND fastest run if no elements are present in the collection yet
+    if (this.getSize() == 0) {
+      this.longestRun = toAdd;
+      this.fastestRun = toAdd;
+    }
+    else {
+      // will save passed in Run as "Longest Run" if it is longer than the current "Longest Run"
+      if (Double.compare(longestRun.distance, toAdd.distance) < 0) {
+        this.longestRun = toAdd;
+      }
+      // will save passed in Run as "Fastest Run" if it is Faster than the current "Fastest Run"
+      if (this.comparePace(toAdd.paceOfRun, this.fastestRun.paceOfRun) > 0) {
+        this.fastestRun = toAdd;
+      }
+    }
+
+    // finally, adds run to the Collection
     runStorage.add(toAdd);
     Collections.sort(runStorage);
     ++size;
@@ -112,6 +130,67 @@ public class RunStorage {
   public int getSize() {
     return this.size;
   }
+
+  /**
+   * this method gets the longest run stored in this collection
+   * @return The longestRun field variable
+   */
+  public Run getLongest() {
+    return this.longestRun;
+  }
+
+  /**
+   * This method gets the Fastest run stored in this collection
+   * @return the fastestRun field variable
+   */
+  public Run getFastest() {
+    return this.fastestRun;
+  }
+
+  /**
+   * This private method compares two passed in Run Pace's in the form of String's and compares them to see
+   * which one is faster. The pace will be formatted as such: ##:##
+   * @param pace1 the pace of a Run Object
+   * @param pace2 the pace of a second Run Object
+   * @return a positive int if pace1 is faster than pace2, 
+   * a negative int if pace1 is slower than pace2, and 0 if they are the same
+   */
+  private int comparePace(String pace1, String pace2) {
+    // seperates the numbers in each pace: [Minutes], [Seconds]
+    String[] paceOne = pace1.split(":");
+    String[] paceTwo = pace2.split(":");
+
+    // Storing the Minutes and seconds into variables of each pace
+    Double pace1Minutes = Double.parseDouble(paceOne[0]);
+    Double pace1Seconds = Double.parseDouble(paceOne[1]);
+    Double pace2Minutes = Double.parseDouble(paceTwo[0]);
+    Double pace2Seconds = Double.parseDouble(paceTwo[1]);
+
+    // Compare the pace1 and pace2
+    
+    // if pace1 has a lower minute number (faster)
+    if (Double.compare(pace1Minutes, pace2Minutes) < 0) {
+      return 1;
+    }
+    // if pace1 has a higher minutes number (slower)
+    if (Double.compare(pace1Minutes, pace2Minutes) > 0) {
+      return -1;
+    }
+    
+    // this section is if the numbers are equal
+
+    // if pace1 has a lower seconds number (faster)
+    if (Double.compare(pace1Seconds,pace2Seconds) < 0) {
+      return 1;
+    }
+    // if pace1 has a higher seconds number (slower)
+    if (Double.compare(pace1Seconds, pace2Seconds) > 0) {
+      return -1;
+    }
+
+    return 0; // if code reaches here than both paces are equal
+  }
+
 
   
  

@@ -139,7 +139,7 @@ public class RunStorage {
     RunStorage topSeven = new RunStorage();
 
     // if there are less than 7 songs in the Run Collection
-    if (topSeven.getSize() < 7) {
+    if (this.getSize() < 7) {
       for (int i = 0; i < runStorage.size(); ++i) {
         topSeven.addRun(this.runStorage.get(i));
       }

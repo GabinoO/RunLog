@@ -15,13 +15,9 @@ public class RunStorage {
    */
   public void readFile(String fileName) {
     File aFile = new File(fileName);
-    Scanner scnr = null;
-    try {
-      scnr = new Scanner(aFile);
-    }
-    catch(FileNotFoundException e) {
-      System.out.println("File was not found");
-    }
+    Scanner scnr = null; 
+    scnr = new Scanner(aFile);
+
     while(scnr.hasNextLine()) {
       // reads one line and splits it by: ","
       String currLine = scnr.nextLine();
@@ -44,6 +40,7 @@ public class RunStorage {
         String date = runToSave[2];
         toAdd = new Run(distance,time,date);
       }
+
       this.addRun(toAdd);
     }
 

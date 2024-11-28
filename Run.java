@@ -1,8 +1,12 @@
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 
 
+/**
+ * This class defines the Run Object
+ */
 public class Run implements Comparable<Run>{
   
   String title; // title of run
@@ -28,11 +32,10 @@ public class Run implements Comparable<Run>{
     
     // checks for any errors with arguments
     if (distance == null || (distance - 0.0) < 0.001 ) {
-      throw new NoSuchElementException("Invalid time, either null or negative");
+      throw new IllegalArgumentException("Invalid time, either null or negative");
     }
-    if (time == null || time.trim().isBlank()) {
-      throw new NoSuchElementException("Invalid time, either null or blank");
-    }
+
+    this.verifyTime(time); // private method to verify the format of time is correct
     
     // saves the runs' distance, time of run, date of run, pace of run
     this.distance = distance;
@@ -66,11 +69,10 @@ public class Run implements Comparable<Run>{
     
     // checks for any errors with arguments
     if (distance == null || (distance - 0.0) < 0.001 ) {
-      throw new NoSuchElementException("Invalid time, either null or negative");
+      throw new IllegalArgumentException("Invalid time, either null or negative");
     }
-    if (time == null || time.trim().isBlank()) {
-      throw new NoSuchElementException("Invalid time, either null or blank");
-    }
+
+    this.verifyTime(time); // private method to verify the format of time is correct
     
     // saves the runs' distance, time of run, pace of run
     this.distance = distance;
@@ -165,10 +167,7 @@ public class Run implements Comparable<Run>{
     // split the array on the ":" symbol
     String[] parsedTime = time.split(":");
     int[] toReturn = new int[3];
-      
-    // verifies the array is properly formatted
-    this.verifyRunningTime(parsedTime);
-      
+
     // has only seconds (00)
     if (parsedTime.length == 1) {
       seconds = Integer.parseInt(parsedTime[0]);
@@ -278,27 +277,8 @@ public class Run implements Comparable<Run>{
     return toReturn;  
     
   }
-  }
   
-  /**
-   * this method is used to verify a string array where each index represents a catagory of time (hours,minutes,seconds). To ensure
-   * that each index is properly formatted 
-   * @param parsedTime the array containing the time of the run
-   */
-  private void verifyRunningTime(String[] parsedTime) {
-    // should only be 3 index's max 00 > Hour (00:00:00) , Minutes (00:00), Seconds (00)
-    if (parsedTime.length > 3 || parsedTime.length == 0) { 
-      throw new IllegalArgumentException("Time is not properly formatted. Ex. (00:00:00)");
-    }
-    int sum = 0;
-    for (int i = 0; i < parsedTime.length; ++i) {
-      sum +=Integer.parseInt(parsedTime[i]);
-    }
-    if (sum == 0) {
-      throw new IllegalArgumentException("Time is 0, pick a valid time value that is greater than 0");
-    }
 
-  }
 
   /**
    * Method to compare two runs based on the date of the run 
@@ -338,9 +318,44 @@ public class Run implements Comparable<Run>{
     
   }
 
-  
+  /**
+   * This private method verifies the time is in the right format. 
+   * (1) Characters in the string should either be a digit or ':'
+   * (2) the sum of all the numbers should not be 0 (meaning the time is 0)
+   * @param time the string representing time
+   * @return true if it is propperly formatted, false otherwise 
+   */
+  private void verifyTime(String time) {
+    if (time == null || time.trim().isBlank()) {
+      throw new IllegalArgumentException("Time is empty");
+    }
+    // verify the appropriate charaters are found
+    for (int i = 0; i < time.length(); ++ i) {
+      if (Character.isDigit(time.charAt(i))) {
+        continue;
+      }
+      else if (time.charAt(i) == ':') {
+        continue;
+      }
+      // if code reaches here than character is not a digit or ':'
+      throw new IllegalArgumentException("Time contains unexpected characters");
+    }
+
+    // verify the format of the characters are good
+    String[] toVerify = time.split(":");
+    // should only be 3 index's max 00 > Hour (00:00:00) , Minutes (00:00), Seconds (00)
+    if (toVerify.length > 3 || toVerify.length == 0) { 
+      throw new IllegalArgumentException("Time is not properly formatted. Ex. (00:00:00)");
+    }
+    int sum = 0;
+    for (int i = 0; i < toVerify.length; ++i) {
+      sum +=Integer.parseInt(toVerify[i]);
+    }
+    if (sum == 0) {
+      throw new IllegalArgumentException("Time is 0, pick a valid time value that is greater than 0");
+    }
+  }
 
 
-  
 
 }

@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
@@ -22,7 +23,7 @@ public class FrontendRun {
     System.out.println("[Load]: Load Your Running File");
     System.out.println("[Fast]: Get Your Fastest Run");
     System.out.println("[Long]: Get Your Longest Run");
-    System.out.println("[Display]: Display your 7 most recent songs");
+    System.out.println("[Display]: Display your 7 most recent Runs");
     System.out.println("[Add]: Add a Run in Log");
     System.out.println("[Delete]: Delete a Run in Log");
     System.out.println("[Quit]: Quit the program");
@@ -99,7 +100,7 @@ public class FrontendRun {
       }
       // will re-prompt to put in file again or quit
       catch(FileNotFoundException e) {
-        System.out.println("Invalid file path. Please re-enter another file name");
+        System.out.println("Invalid file path. Please re-enter another file name or \"Quit\" to exit to main menu");
       }
     }
   }
@@ -141,17 +142,19 @@ public class FrontendRun {
     String date = "";
     System.out.println("Please provide the required information to add a run to your log");
 
-    // prompts for distance
+    // prompts for distance verifies
     System.out.println("Provide distance of the run: Ex. 4.13");
     if (input.hasNextLine()) {
-      //String potentialNumber = input.nextLine().trim();
-      distance  = input.nextDouble();
+      String potentialNumber = input.nextLine().trim();
+      // calls private method to verify the input is a type double
+      if (this.numIsValid(potentialNumber)) {
+        distance  = Double.valueOf(potentialNumber);
+      }
+      else {
+        System.out.println("Not a valid distance");
+        return; // returns to main menu
+      }
     }
-    else {
-      System.out.println("Not a valid distance");
-      return; // returns to main menu
-    }
-    input.nextLine();
     
     // prompts for time
     System.out.println("Provide time of the run: Ex. 00:42:14");
@@ -167,16 +170,45 @@ public class FrontendRun {
     System.out.println("OPTIONAL: Provide a specific date. If not press S for \"Skip\" and the run will " + 
     "default to todays date. Ex. 2024-11-26");
 
+    // checks if input is "skip" --> make a Run object with todays' date
     if (input.hasNextLine()) {
       date = input.nextLine().trim();
-      if (date.equalsIgnoreCase("skip")) { // it will make a run with just distance and time
-        Run toAdd = new Run(distance, time);
+      if (date.equalsIgnoreCase("s")) { // it will make a run with just distance and time
+        Run toAdd = null;
+        try {
+           toAdd = new Run(distance, time);
+        }
+        catch(IllegalArgumentException e) {
+          e.getMessage();
+          System.out.println("Invalid arguement. Run was not added to log");
+          return;
+        }
+        catch(DateTimeParseException e) {
+          e.getMessage();
+          System.out.println("Invalid arguement. Run was not added to log");
+          return;
+        }
         this.runCollection.addRun(toAdd);
         System.out.println("Run has been added to your log!");
         return; // run added, now return to menu
       }
+
+      // else --> make a Run object with passed in date
       else {
-        Run toAdd = new Run(distance, time, date);
+        Run toAdd = null;
+        try {
+          toAdd = new Run(distance, time, date);
+        }
+        catch(IllegalArgumentException e) {
+          e.getMessage();
+          System.out.println("Invalid arguement. Run was not added to log");
+          return;
+        }
+        catch(DateTimeParseException e) {
+          e.getMessage();
+          System.out.println("Invalid arguement. Run was not added to log");
+          return;
+        }
         this.runCollection.addRun(toAdd);
         System.out.println("Run has been added to your log!");
         return; // run added, now return to menu
@@ -185,7 +217,20 @@ public class FrontendRun {
     
   }
 
-
+  /**
+   *  This method verifys the passed in string is a double variable
+   * @param num the string to verify
+   * @return true if it is a double, false otherwise
+   */
+  private boolean numIsValid(String num) {
+    try {
+      Double.parseDouble(num);
+    }
+    catch(NumberFormatException e) { // is this exception was thrown than the string cannot be a double
+      return false;
+    }
+    return true;
+  }
 
 
 }

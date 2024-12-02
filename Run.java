@@ -13,6 +13,7 @@ public class Run implements Comparable<Run>{
   String location; // location of run
   String weather; // weather of run
   String paceOfRun; // pace of the run
+  String description; // description of the run
   double distance; // total distance of the run
   int temperature; // temperature of the run
   int rating; // total rating of the run
@@ -50,6 +51,7 @@ public class Run implements Comparable<Run>{
     weather = null;
     temperature = 0;
     rating = 0;
+    description = "";
 
   }
 
@@ -89,6 +91,7 @@ public class Run implements Comparable<Run>{
     weather = null;
     temperature = 0;
     rating = 0;
+    description = "";
 
   }
   
@@ -148,9 +151,18 @@ public class Run implements Comparable<Run>{
       throw new NoSuchElementException("Invalid time, either null or blank");
     }
     int[] arrayOfTimes = new int[3];
+    this.verifyTime(time);
     arrayOfTimes = this.stringToTime(time);
     timeRan = LocalTime.of(arrayOfTimes[0], arrayOfTimes[1], arrayOfTimes[2]);
     this.calculatePace();
+  }
+
+  /**
+   * This method sets the description of the run with the passed in String
+   * @param description the description of the run
+   */
+  public void setDescription(String description) {
+    this.description = description;
   }
   
   /**
@@ -238,7 +250,22 @@ public class Run implements Comparable<Run>{
   public int getRating() {
     return this.rating;
   }
-  
+
+  /**
+   * returns the field variable paceOfRun
+   * @return the pace of the run determined by the distance / time
+   */
+  public String getPace() {
+    return this.paceOfRun;
+  }
+
+  /**
+   * returns the field variable description
+   * @return 
+   */
+  public String getDescription() {
+    return this.description;
+  }
   /**
    * this method calculates the average minutes/mile of this run based on the passed in 
    * distance and time of run

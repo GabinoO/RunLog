@@ -472,12 +472,12 @@ public class FrontendRun {
            toAdd = new Run(distance, time);
         }
         catch(IllegalArgumentException e) {
-          e.getMessage();
+          System.out.println(e.getMessage());
           System.out.println("Invalid arguement. Run was not added to log");
           return;
         }
         catch(DateTimeParseException e) {
-          e.getMessage();
+          System.out.println(e.getMessage());
           System.out.println("Invalid arguement. Run was not added to log");
           return;
         }
@@ -493,12 +493,12 @@ public class FrontendRun {
           toAdd = new Run(distance, time, date);
         }
         catch(IllegalArgumentException e) {
-          e.getMessage();
+          System.out.println(e.getMessage());
           System.out.println("Invalid arguement. Run was not added to log");
           return;
         }
         catch(DateTimeParseException e) {
-          e.getMessage();
+          System.out.println(e.getMessage());
           System.out.println("Invalid arguement. Run was not added to log");
           return;
         }
@@ -601,7 +601,7 @@ public class FrontendRun {
           System.out.println("The following Run has been edited" + "\n" + toEdit);
         }
         catch(IllegalArgumentException e) {
-          e.getMessage();
+          System.out.println(e.getMessage());
           return;
         }
         catch(Exception e) {

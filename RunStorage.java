@@ -1,19 +1,27 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
+/**
+ * This class defines a collection of Run objects in the form of a sorted ArrayList
+ */
 public class RunStorage {
 
   ArrayList<Run> runStorage = new ArrayList<>(); // Sorted arraylist to store all Run objects 
   int size = 0;
   Run fastestRun = null;
   Run longestRun = null;
-
+  
   /**
    * This method reads in a CSV file of Run and adds each Run to the collection. The CSV file will be sorted as such:
    * Distance, Time, Date(If applicable)
    * @param fileName
+   * @throws FileNotFoundException 
    */
-  public void readFile(String fileName) {
+  public void readFile(String fileName) throws FileNotFoundException {
     File aFile = new File(fileName);
     Scanner scnr = null; 
     scnr = new Scanner(aFile);
@@ -45,7 +53,8 @@ public class RunStorage {
     }
 
   }
-  
+
+
   /**
    * adds the passed in run to the ArrayList field than sorts the Arraylist
    * @param toAdd the run to add to the sorted array
@@ -71,6 +80,7 @@ public class RunStorage {
     runStorage.add(toAdd);
     Collections.sort(runStorage);
     ++size;
+
   }
 
   /**
@@ -79,12 +89,20 @@ public class RunStorage {
    * @return the removed run, or null if it was not found
    */
   public Run removeRun(Run toRemove) {
+    // makes a temp object to be able to compare this Run from another in this collection
     int indexOfRun = this.findRun(toRemove);
     if (indexOfRun == -1) {
       return null;
     }
     else {
-      return this.runStorage.remove(indexOfRun);
+      --this.size;
+      if (toRemove.compareTo(this.getFastest()) == 0) { // if fastest was removed
+        this.setFastest();
+      } 
+      if (toRemove.compareTo(this.longestRun) == 0) { // if longest was removed
+        this.setLongest(); 
+      }
+      return this.runStorage.remove(indexOfRun); // removes and returns the removed run
     }
   }
 
@@ -119,14 +137,23 @@ public class RunStorage {
     return -1; 
   }
 
-  public Run getRun(Run key) {
-    int indexOfRun = this.findRun(key);
-    if (indexOfRun == -1) {
-      return null;
+  /**
+   * This method finds the run that matches the passed in date. if two runs are on the same day,
+   * this method will return the one that was entered first
+   * @param date the date matching the target run
+   * @return the run that matches the specified date
+   */
+  public Run getRun(String date) {
+    if (date == null || date.trim().isBlank()) {
+      throw new IllegalArgumentException();
     }
-    else {
-      return this.runStorage.get(indexOfRun);
+
+    Run toFind = new Run(1.00, "00:10:00" ,date);
+    int index = this.findRun(toFind);
+    if (index == -1) {
+      throw new NoSuchElementException();
     }
+    return this.runStorage.get(index); // returns the Run at the index returned from the findRun() method
   }
 
   /**
@@ -135,7 +162,6 @@ public class RunStorage {
    * @return the latest 7 runs
    */
   public RunStorage getLatest7() {
-    ArrayList<Run> toReturn = new ArrayList<>();
     RunStorage topSeven = new RunStorage();
 
     // if there are less than 7 songs in the Run Collection
@@ -146,7 +172,8 @@ public class RunStorage {
       return topSeven;
     }
 
-    for (int i = 0; i < 7; ++i) {
+    // will return the latest 7 runs 0(Earliest) --> 6(Late)
+    for (int i = this.getSize()-1; i >= this.getSize()-7; --i) {
       topSeven.addRun(this.runStorage.get(i));
     }
     return topSeven;
@@ -165,6 +192,10 @@ public class RunStorage {
     return toReturn;
   }
 
+  /**
+   * This method gets the amount of Run Objects in this collection
+   * @return the size field variable
+   */
   public int getSize() {
     return this.size;
   }
@@ -229,8 +260,44 @@ public class RunStorage {
     return 0; // if code reaches here than both paces are equal
   }
 
+  /**
+   * This re-sets the fastestRun variable with the fastest run in the collection
+   */
+  private void setFastest() {
+    if (this.getSize() == 0) {
+      this.fastestRun = null;
+      return;
+    }
+    // finds fastest run
+    Run max = this.runStorage.get(0);
+    for (int i = 0; i < this.getSize(); ++i) {
+      Run currRun = this.runStorage.get(i);
+      if (this.comparePace(max.paceOfRun, currRun.paceOfRun) < 0) {
+        max = runStorage.get(i);
+      }
+    }
+    this.fastestRun = max;
+  }
 
-  
- 
+  /**
+   * This re-sets the longestRun variable with the fastest run in the collection
+   */
+  private void setLongest() {
+    if (this.getSize() == 0) {
+      this.fastestRun = null;
+      return;
+    }
+    // finds longest run 
+    Run max = this.runStorage.get(0);
+    for (int i = 0; i < this.getSize(); ++i) {
+      Run currRun = this.runStorage.get(i);
+      if (currRun.distance > max.distance) {
+        max = runStorage.get(i);
+      }
+    }
+    this.longestRun = max;
 
-}
+  }
+
+
+} 

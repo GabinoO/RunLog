@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.time.format.DateTimeParseException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -15,37 +16,99 @@ public class FrontendRun {
   }
 
   /**
-   * This method displays the main menu options for the user
+   * Page (1) This method displays the main menu options which dictates whether the user would like to:
+   * (1A) Display information about their log
+   * (1B) Access / update information about their log
    */
-  public void DisplayOptions() {
+  public void mainMenuOptions() {
     System.out.println();
-    System.out.println("Enter any of the following commands to begin your Running Log");
+    System.out.println("--------------------- Main Menu ---------------------");
+    System.out.println("What would you like to do to your Running Log");
     System.out.println("[Load]: Load Your Running File");
-    System.out.println("[Fast]: Get Your Fastest Run");
-    System.out.println("[Long]: Get Your Longest Run");
-    System.out.println("[Display]: Display your 7 most recent Runs");
-    System.out.println("[Add]: Add a Run in Log");
-    System.out.println("[Delete]: Delete a Run in Log");
+    System.out.println("[Display]: Display Information from your Running Log");
+    System.out.println("[Edit]: Edit your Running Log");
     System.out.println("[Quit]: Quit the program");
     System.out.println();
   }
 
   /**
-   * This method takes in user input and calls the appropriate method
+   * Page (1A) 
+   * This method displays commands for displaying information from their Running Log
    */
-  public void loopUI() {
+  public void DisplayLogInfo() {
+    System.out.println();
+    System.out.println("--------------------- Display Log ---------------------");
+    System.out.println("Enter any of the following commands to display key information");
+    System.out.println("[Fast]: Get Your Fastest Run");
+    System.out.println("[Long]: Get Your Longest Run");
+    System.out.println("[Recent]: Display your 7 most recent Runs");
+    System.out.println("[Quit]: Go back to main menu");
+    System.out.println();
+  }
 
+  /**
+   * Page (1B)
+   * This method displays commands for editing information from their Running Log
+   */
+  public void DisplayRunEdits() {
+    System.out.println();
+    System.out.println("--------------------- Edit Log ---------------------");
+    System.out.println("Enter any of the following commands to edit your Running Log");
+    System.out.println("[Add]: Add a Run in Log");
+    System.out.println("[Delete]: Delete a Run in Log");
+    System.out.println("[Set Title]: Set the title of a run");
+    System.out.println("[Quit]: Go back to main menu");
+    System.out.println();
+  }
+
+
+
+  /**
+   * (1)
+   * This method takes in commands when a user from the main menu options
+   */
+  public void loopMainMenu() {
     boolean done = false;
     // start the loop for user interaction
     while (!done) {
     // will display the menu
-    this.DisplayOptions();
+    this.mainMenuOptions();
       String command = input.nextLine().trim().toUpperCase();
       switch(command) {
         case "LOAD":
           this.loadUserFile();
           break;
 
+        case "DISPLAY":
+          this.loopDisplayInfo();
+          break;
+
+        case "EDIT" :
+          this.loopEditLog();
+          break;
+
+        case "QUIT":
+          done = true;
+          break;
+
+        default:
+          System.out.println("Invalid command. Please try again.");
+      }
+    }
+  }
+
+  /**
+   * (1A) 
+   * This method takes in commands from Display List Options
+   */
+  public void loopDisplayInfo() {
+    boolean done = false;
+    // start the loop for user interaction
+    while (!done) {
+    // will display the menu
+    this.DisplayLogInfo();
+      String command = input.nextLine().trim().toUpperCase();
+      switch(command) {
         case "FAST":
           this.fastestRun();
           break;
@@ -54,15 +117,42 @@ public class FrontendRun {
           this.longestRun();
           break;
 
-        case "DISPLAY":
+        case "RECENT": 
           this.displayTop7();
           break;
-        
+
+        case "QUIT":
+          done = true;
+          break;
+
+        default:
+          System.out.println("Invalid command. Please try again.");
+      }
+    }
+  }
+
+  /**
+   * (1B)
+   * This method takes in commands from the user to edit their Running Log
+   */
+  public void loopEditLog() {
+    boolean done = false;
+    // start the loop for user interaction
+    while (!done) {
+    // will display the menu
+    this.DisplayRunEdits();
+      String command = input.nextLine().trim().toUpperCase();
+      switch(command) {
         case "ADD":
         this.addUserRun();
           break;
 
         case "DELETE":
+          this.removeRun();
+          break;
+
+        case "SET TITLE":
+          this.setTitle();
           break;
 
         case "QUIT":
@@ -106,25 +196,55 @@ public class FrontendRun {
   }
 
   /**
+   * (1A)
    * This method displays the users fastest run
    */
   public void fastestRun() {
+    if (this.logIsEmpty()) {
+      System.out.println("You have no runs stored in this log. " + 
+      "Please store runs before accessing information from your running log");
+      return;
+    }
     System.out.println("Your Fastest run in your Running Log is:");
-    System.out.println(this.runCollection.getFastest() + "\n");
+    Run temp = this.runCollection.getFastest();
+    if (temp == null) {
+      System.out.println("This collection is empty");
+    }
+    else {
+      System.out.println(this.runCollection.getFastest() + "\n");
+    }
   }
 
   /**
+   * (1A)
    * This method displays the users longest run
    */
   public void longestRun() {
+    if (this.logIsEmpty()) {
+      System.out.println("You have no runs stored in this log. " + 
+      "Please store runs before accessing information from your running log");
+      return;
+    }
     System.out.println("Your Longest run in your Running Log is:");
-    System.out.println(this.runCollection.getLongest());
+    Run temp = this.runCollection.getLongest();
+    if (temp == null) {
+      System.out.println("This collection is empty");
+    }
+    else {
+      System.out.println(this.runCollection.getLongest());
+    } 
   }
 
   /**
+   * (1A)
    * This method displays the 7 most recent Runs for the user
    */
   public void displayTop7() {
+    if (this.logIsEmpty()) {
+      System.out.println("You have no runs stored in this log. " + 
+      "Please store runs before accessing information from your running log");
+      return;
+    }
     RunStorage display = new RunStorage();
     // save top 7 songs into variable and print them
     display = this.runCollection.getLatest7();
@@ -134,6 +254,34 @@ public class FrontendRun {
   }
 
   /**
+   * This private method helps all the 1B pages by finding the run based on the passed in date and returns the matching run 
+   * so it can be altered
+   * @return the desired run or null is no run was found
+   */
+  private Run findRun() {
+    if (this.logIsEmpty()) {
+      System.out.println("You have no runs stored in this log. " + 
+      "Please store runs before accessing information from your running log");
+      return null;
+    }
+    System.out.println("provide the date of the run you would like to edit");
+    String date = "";
+    if (input.hasNextLine()) {
+      date = input.nextLine().trim();
+      try {
+        Run toReturn = runCollection.getRun(date);
+        return toReturn;
+      }
+      catch(NoSuchElementException e)  {
+        System.out.println("Run was not found, Please try again.");
+        return null;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * (1B)
    * this method adds a run to the users running log / collection 
    */
   public void addUserRun() {
@@ -218,6 +366,39 @@ public class FrontendRun {
   }
 
   /**
+   * (1B)
+   * This method removes a specified run from the users collection / log
+   */
+  public void removeRun() {
+    Run toRemove = this.findRun(); // private method to prompt for a run and finds the run 
+    if (toRemove == null) {
+      return;
+    }
+    Run runRemoved = this.runCollection.removeRun(toRemove);
+    System.out.println("The following run was removed\n" + runRemoved);
+  }
+
+  /**
+   * (1B)
+   * This method sets the title of the passed in run. The title will be set
+   * to the Run that matches the passed in time and sets the title to the input provided by the user
+   */
+  public void setTitle() {
+    Run toEdit = this.findRun();
+    if (toEdit == null) {
+      return;
+    }
+    // update the description
+    System.out.println("Enter the updated title of the run:");
+    if (input.hasNextLine()) {
+      String title = input.nextLine();
+      toEdit.setTitle(title);
+      System.out.println("The following Run has been edited" + toEdit + "\n");
+      }
+    }
+  
+
+  /**
    *  This method verifys the passed in string is a double variable
    * @param num the string to verify
    * @return true if it is a double, false otherwise
@@ -232,5 +413,15 @@ public class FrontendRun {
     return true;
   }
 
+  /**
+   * This method tells us wether the running log has any runs present or not
+   * @return true if log is empty, false otherwise
+   */
+  private boolean logIsEmpty() {
+    if (this.runCollection.getSize() == 0) {
+      return true;
+    }
+    return false;
+  }
 
 }

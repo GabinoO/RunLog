@@ -1,5 +1,4 @@
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 
@@ -11,11 +10,9 @@ public class Run implements Comparable<Run>{
   
   String title; // title of run
   String location; // location of run
-  String weather; // weather of run
   String paceOfRun; // pace of the run
   String description; // description of the run
   double distance; // total distance of the run
-  int temperature; // temperature of the run
   int rating; // total rating of the run
   LocalTime timeRan; // time spent running
   LocalDate runDate; // the date of the run
@@ -48,10 +45,8 @@ public class Run implements Comparable<Run>{
     // initalize remaining fields
     title = null;
     location = null;
-    weather = null;
-    temperature = 0;
     rating = 0;
-    description = "";
+    description = null;
 
   }
 
@@ -88,10 +83,8 @@ public class Run implements Comparable<Run>{
     // initalize remaining fields
     title = null;
     location = null;
-    weather = null;
-    temperature = 0;
     rating = 0;
-    description = "";
+    description = null;
 
   }
   
@@ -109,22 +102,6 @@ public class Run implements Comparable<Run>{
    */
   public void setLocation(String location) {
     this.location = location;
-  }
-  
-  /**
-   * this methods sets the weather of the run with the passed in argument
-   * @param weather the weather at the time of run
-   */
-  public void setWeather(String weather) {
-    this.weather = weather;
-  }
-  
-  /**
-   * this methods sets the temperature of the run with the passed in argument
-   * @param temperature the temperature at the time of run
-   */
-  public void setTemperature(int temperature) {
-    this.temperature = temperature;
   }
   
   /**
@@ -226,23 +203,7 @@ public class Run implements Comparable<Run>{
   public String getLocation() {
     return this.location;
   }
-  
-  /**
-   * returns the field variable weather
-   * @return weather of the run or null if has not been set
-   */
-  public String getWeather() {
-    return this.weather;
-  }
-  
-  /**
-   * returns the field variable temperature
-   * @return temperature of the run or 0 if has not been set
-   */
-  public int getTemperature() {
-    return this.temperature;
-  }
-  
+
   /**
    * returns the field varuable rating
    * @return rating of the run or 0 if has not been set

@@ -42,6 +42,12 @@ public class FrontendRun {
     System.out.println("[Fast]: Get Your Fastest Run");
     System.out.println("[Long]: Get Your Longest Run");
     System.out.println("[Recent]: Display your 7 most recent Runs");
+    System.out.println("[Title]: Display title of a Run");
+    System.out.println("[Location]: Display location of a Run");
+    System.out.println("[Description]: Display description of a Run");
+    System.out.println("[Rating]: Display rating of a Run");
+    System.out.println("[Run]: Display all data of a Run");
+    System.out.println("[All]: Display all the Runs in this log");
     System.out.println("[Quit]: Go back to main menu");
     System.out.println();
   }
@@ -56,7 +62,10 @@ public class FrontendRun {
     System.out.println("Enter any of the following commands to edit your Running Log");
     System.out.println("[Add]: Add a Run in Log");
     System.out.println("[Delete]: Delete a Run in Log");
-    System.out.println("[Set Title]: Set the title of a run");
+    System.out.println("[Set Title]: Set the title of a Run");
+    System.out.println("[Set Loc]: Set the location of a Run");
+    System.out.println("[Set Des]: Set the description of a Run");
+    System.out.println("[Set Rating]: Set the Rating of a Run");
     System.out.println("[Quit]: Go back to main menu");
     System.out.println();
   }
@@ -121,6 +130,30 @@ public class FrontendRun {
           this.displayTop7();
           break;
 
+        case "TITLE":
+          this.displayLocation();
+          break;
+
+        case "LOCATION":
+          this.displayLocation();
+          break;
+
+        case "DESCRIPTION":
+          this.displayDescription();
+          break;
+      
+        case "RATING":
+          this.displayRating();
+          break;
+
+        case "RUN":
+          this.displayRun();
+          break;
+
+        case "ALL":
+          this.displayAll();
+          break;
+
         case "QUIT":
           done = true;
           break;
@@ -153,6 +186,18 @@ public class FrontendRun {
 
         case "SET TITLE":
           this.setTitle();
+          break;
+
+        case "SET LOC":
+          this.setLocation();
+          break;
+
+        case "SET DES":
+          this.setDescription();
+          break;
+
+        case "SET RATING":
+          this.setRating();
           break;
 
         case "QUIT":
@@ -254,6 +299,106 @@ public class FrontendRun {
   }
 
   /**
+   * (1A)
+   * This method displays the title of the desired run
+   */
+  public void displayTitle() {
+    Run toDisplay = this.findRun();
+    if (toDisplay == null) {
+      return;
+    }
+    if (toDisplay.getTitle() == null) {
+      System.out.println("Title has not been set for this run");
+      return;
+    }
+    System.out.println("Title: \n" + toDisplay.getTitle() + "\n" + toDisplay);
+  }
+
+  /**
+   * (1A)
+   * This method displays the location of the desired run
+   */
+  public void displayLocation() {
+    Run toDisplay = this.findRun();
+    if (toDisplay == null) {
+      return;
+    }
+    if (toDisplay.getLocation() == null) {
+      System.out.println("Location has not been set for this run");
+      return;
+    }
+    System.out.println("Location: \n" + toDisplay.getLocation() + "\n" + toDisplay);
+
+  }
+
+  /**
+   * (1A)
+   * This method displays the description of the desired run
+   */
+  public void displayDescription() {
+    Run toDisplay = this.findRun();
+    if (toDisplay == null) {
+      return;
+    }
+    if (toDisplay.getDescription() == null) {
+      System.out.println("Description has not been set for thus run");
+    }
+    System.out.println("Description: \n" + toDisplay.getDescription() + "\n" + toDisplay);
+  }
+
+  /**
+   * (1A)
+   * This method displays the rating of the desired run
+   */
+  public void displayRating() {
+    Run toDisplay = this.findRun();
+    if (toDisplay == null) {
+      return;
+    }
+    System.out.println("Rating: \n" + toDisplay.getRating() + "\n" + toDisplay);
+  }
+
+  /**
+   * (1A)
+   * This method will display all the information of a desired run
+   */
+  public void displayRun() {
+    Run toDisplay = this.findRun();
+    if (toDisplay == null) {
+      return;
+    }
+    // save fields
+    String location = toDisplay.getLocation();
+    String description = toDisplay.getDescription();
+    String title = toDisplay.getTitle();
+    int rating = toDisplay.getRating();
+    
+    // check for run fields that have not been set yet
+    if (location == null){
+      location = "Not Set";
+    }
+    if (description == null) {
+      description = "Not Set";
+    }
+    if (title == null) {
+      title = "Not Set";
+    }
+    System.out.println("Title: " + title + "\n" + "Location: " + location + "\n" + "Rating: " + rating + "\n" +
+      toDisplay + "\n" + "Desciption: " + description + "\n");
+  }
+
+  /**
+   * This method prints out all the runs in the current log
+   */
+  public void displayAll() {
+    if (this.logIsEmpty()) {
+      System.out.println("This Log has no Runs");
+      return;
+    }
+    System.out.println(this.runCollection);
+  }
+
+  /**
    * This private method helps all the 1B pages by finding the run based on the passed in date and returns the matching run 
    * so it can be altered
    * @return the desired run or null is no run was found
@@ -264,7 +409,7 @@ public class FrontendRun {
       "Please store runs before accessing information from your running log");
       return null;
     }
-    System.out.println("provide the date of the run you would like to edit");
+    System.out.println("provide the date of the your desired run");
     String date = "";
     if (input.hasNextLine()) {
       date = input.nextLine().trim();
@@ -388,12 +533,81 @@ public class FrontendRun {
     if (toEdit == null) {
       return;
     }
-    // update the description
+    // update the title
     System.out.println("Enter the updated title of the run:");
     if (input.hasNextLine()) {
       String title = input.nextLine();
       toEdit.setTitle(title);
-      System.out.println("The following Run has been edited" + toEdit + "\n");
+      System.out.println("The following Run has been edited" + "\n" + toEdit);
+      }
+    }
+
+    /**
+     * (1B) 
+     * This method sets the location of the passed in run. The Location will be set
+     * to the Run that matches the passed in time and sets the location to the input provided by the user
+     */
+    public void setLocation() {
+      Run toEdit = this.findRun();
+      if (toEdit == null) {
+        return;
+      }
+      // update location
+      System.out.println("Enter the updated location of the run:");
+      if (input.hasNextLine()) {
+        String location = input.nextLine();
+        toEdit.setLocation(location);
+        System.out.println("The following Run has been edited" + "\n" + toEdit);
+      }
+    }
+
+    /**
+     * (1B)
+     * This method sets the description of the passed in run. The Description will be set
+     * to the Run that matches the passed in time and sets the Description to the input provided by the user
+     */
+    public void setDescription() {
+      Run toEdit = this.findRun();
+      if (toEdit == null) {
+        return;
+      }
+      // update description
+      System.out.println("Enter the updated description of the run:");
+      if (input.hasNextLine()) {
+        String description = input.nextLine();
+        toEdit.setDescription(description);
+        System.out.println("The following Run has been edited" + "\n" + toEdit);
+      }
+    }
+
+    /**
+     * (1B)
+     * This method sets therating of the passed in run. The rating will be set
+     * to the Run that matches the passed in time and sets the rating to the input provided by the user
+     */
+    public void setRating() {
+      Run toEdit = this.findRun();
+      if (toEdit == null) {
+        return;
+      }
+      // update rating
+      System.out.println("Enter the updated rating of the run: " + "\n*Note: Must be between at or between 1-10");
+      if (input.hasNextLine()) {
+        // will read in line and try to convert to an int + check if rating is between 1-10(inclusive)
+        try {
+          String potentialRating = input.nextLine();
+          int rating = Integer.parseInt(potentialRating);
+          toEdit.setRating(rating);
+          System.out.println("The following Run has been edited" + "\n" + toEdit);
+        }
+        catch(IllegalArgumentException e) {
+          e.getMessage();
+          return;
+        }
+        catch(Exception e) {
+          System.out.println("Rating was not a number. Please try again");
+          return;
+        }
       }
     }
   
